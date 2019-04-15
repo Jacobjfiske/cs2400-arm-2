@@ -13,7 +13,7 @@
 		
 		ldr		r1, [r0]	  ;first num -> r1
 		ldr		r2, [r0,#4] ;second num -> r2
-		mov		r3, #1	  ;setting mask to 1
+		
 
 		; num1: looks at the sign and changes to positive if flags are set
 		movs		r3, r1, lsr #31	
@@ -25,6 +25,8 @@
 		mvnne	r2, r2			
 		addne	r2, r2, #1		
 		addne	r8, r8, #1
+		
+		mov		r3, #1	  ;setting mask to 1
 		
 		;splits	two numbers into halfs to be multiplied
 		mov		r9, r1, lsr #16
