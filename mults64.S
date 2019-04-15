@@ -91,11 +91,11 @@ main
 		MVNEQ	r2, r2
 		MVNEQ	r5, r5
 		
-		;stores	result
+		;stores	result in [r0] due to the ability to incrememt from upper to lower
 		cmp		r13, #1
 		
-		str		r2, [r7]
-		str		r5, [r7,#4]
+		str		r2, [r0]
+		str		r5, [r0,#4]
 		
 		beq		lowerHalf
 		end
@@ -116,5 +116,5 @@ loop
 		
 upper	DCD		0xA0BCFF0D, 0xFFF0ADEA
 lower	DCD		0xFFF1AD2A, 0xA0ACEF0D
-result	FILL		16
+result	FILL		16 ;I changed the result to r0 due to te ability to incrememnt adresses from upper to lower(so first 4 memory spaces)
 carry	FILL		4
