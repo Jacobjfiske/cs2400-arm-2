@@ -7,19 +7,30 @@
 		;		Write the result in the provided "fill" word.
 		;		Indicate if there was a high-bit carry using the provided "fill" word.
 
-adr		r0, numbers ;adr num -> r0
+		adr		r0, numbers ;adr num -> r0
 		adr		r7, result  ;adr result -> r7
 		adr		r8, carry   ;adr carry -> r8
 		
 		ldr		r1, [r0]	  ;first num -> r1
 		ldr		r2, [r0,#4] ;second num -> r2
 		mov		r3, #1	  ;setting mask to 1
+
+		; num1: looks at the sign and changes to positive if flags are set
+		movs		r3, r1, lsr #31	
+		mvnne	r1, r1			
+		addne	r1, r1, #1		
+		addne	r8, r8, #1		
+		; num2: looks at the sign and changes to positive if flags are set
+		movs		r3, r2, lsr #31	
+		mvnne	r2, r2			
+		addne	r2, r2, #1		
+		addne	r8, r8, #1
 		
 		;splits	two numbers into halfs to be multiplied
-		MOV		r9, r1, LSR #16
-		BIC		r11, r1, r9, LSL #16
-		MOV		r10, r2, LSR #16
-		BIC		r12, r2, r10, LSL #16
+		mov		r9, r1, lsr #16
+		bic		r11, r1, r9, lsl #16
+		mov		r10, r2, lsr #16
+		bic		r12, r2, r10, lsl #16
 		
 		;num1	bottom half * num2 bottom half
 		mov		r1,r11
@@ -58,8 +69,13 @@ adr		r0, numbers ;adr num -> r0
 		
 		;adds	carry and shifts result 16 bits
 		addcs	r2,r2, #&10000
-		adds		r5,r5,r1,LSL #16
-		adc		r2,r2,r1, LSR #16
+		adds		r5,r5,r1,lsl #16
+		adc		r2,r2,r1, lsr #16
+
+				;compares results from earlier checking signed bits and moves negate(twos complement) for each number
+		CMP		r8, #1
+		MVNEQ	r2, r2
+		MVNEQ	r5, r5
 		
 		;stores	result
 		str		r2, [r0]
@@ -80,7 +96,6 @@ loop
 		subs		r5,r5,#1	  ;decrement loop ctr
 		bne		loop		  ;branch to loop
 		mov		pc, lr
-
 numbers	DCD		0xA0BCFF0D, 0xFFF0ADEA
 result	FILL		8
 carry	FILL		4
