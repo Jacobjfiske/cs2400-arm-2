@@ -80,8 +80,8 @@
 		MVNEQ	r5, r5
 		
 		;stores	result
-		str		r2, [r0]
-		str		r5, [r0,#4]
+		str		r2, [r7]
+		str		r5, [r7,#4]
 		
 		end
 		
